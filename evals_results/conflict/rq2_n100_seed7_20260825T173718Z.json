@@ -53,7 +53,7 @@
     "monitor_artifact": "transformers:google/gemma-4-E2B-it@3e22461f65e89153144f8adb70e3b8c2cc9845a7:t=1.0:seed=7",
     "monitor_model": "google/gemma-4-E2B-it",
     "n_rounds": 100,
-    "program_artifact": "llamacpp:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-26B-A4B-it-qat-q4_0-gguf/snapshots/d1c082be9cf3c8a514acf63b8761f4b41935842e/gemma-4-26B_q4_0-it.gguf@b1-f1357e4:t=1.0:seed=7",
+    "program_artifact": "llamacpp:/home/anon/.cache/huggingface/hub/models--google--gemma-4-26B-A4B-it-qat-q4_0-gguf/snapshots/d1c082be9cf3c8a514acf63b8761f4b41935842e/gemma-4-26B_q4_0-it.gguf@b1-f1357e4:t=1.0:seed=7",
     "program_model": "google/gemma-4-26B-A4B-it",
     "request_kinds": "cheapest",
     "seed": 7,

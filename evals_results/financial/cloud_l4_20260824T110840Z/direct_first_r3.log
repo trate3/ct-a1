@@ -1,4 +1,4 @@
-[run] probe: /home/amy.zhao/certified-taps/third_party/deception-detection/results/repe_lr__repe_honesty__plain__gemma-2b__20260824_110746/detector.pt
+[run] probe: /home/anon/certified-taps/third_party/deception-detection/results/repe_lr__repe_honesty__plain__gemma-2b__20260824_110746/detector.pt
 [run] device: cuda  dtype: bfloat16  attn: eager
     program: 5.7s | acts (67, 1, 2304) | answer: 'ASSISTANT: Reasoning: "The market is volatile, and'
     program: 7.2s | acts (128, 1, 2304) | answer: 'ASSISTANT: Reasoning: "The algorithm is failing to'

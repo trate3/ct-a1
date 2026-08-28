@@ -7,7 +7,7 @@
     "model": "google/gemma-2-9b-it",
     "n_trajectories": 2,
     "probe_sha256": "d8126cd7ed8eddb592a7e65d1c61177014828819177b2793e9eeafef1dc716e7",
-    "program_artifact": "gemma2-program-v1:transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-2-9b-it/snapshots/11c9b309abf73637e4b6f9a3fa1e92e615547819@11c9b309abf73637e4b6f9a3fa1e92e615547819:attn=eager",
+    "program_artifact": "gemma2-program-v1:transformers:/home/anon/.cache/huggingface/hub/models--google--gemma-2-9b-it/snapshots/11c9b309abf73637e4b6f9a3fa1e92e615547819@11c9b309abf73637e4b6f9a3fa1e92e615547819:attn=eager",
     "rates": [
       0.5,
       1.0

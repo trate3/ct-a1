@@ -164,27 +164,27 @@ problems with by-construction labels, not invented.
 
 ## Status
 
-- ✅ Full protocol with **confidential transport**: commit → one sealed environment →
+- [x] Full protocol with **confidential transport**: commit → one sealed environment →
   fresh internal trials → aggregate certificate → verify; exact-ciphertext `t_E`
   integrity (attack demo).
-- ✅ Certificate binds the actual provisioned model files, agent configuration,
+- [x] Certificate binds the actual provisioned model files, agent configuration,
   monitor threshold, and probe weights via `h_c`; the public
   specification fixes `id_E`, `len_E`, schemas, trial/step bounds, aggregation, and
   release procedures.
-- ✅ Registered protocol drivers cover static/TreeCut test sets and Apollo's adaptive
+- [x] Registered protocol drivers cover static/TreeCut test sets and Apollo's adaptive
   insider-trading scenario; the transcript-conditioned TreeCut path remains an offline
   evaluation component.
-- ✅ Real `GemmaProgram` / `GemmaMonitor` / `ProbeMonitor` behind the interfaces;
+- [x] Real `GemmaProgram` / `GemmaMonitor` / `ProbeMonitor` behind the interfaces;
   the probe reads retained layer states from the generation calls that produced the
   committed program's answer, without replaying the model.
-- ✅ `python -m evals_runner taps confidence` uses the same registered-driver protocol
+- [x] `python -m evals_runner taps confidence` uses the same registered-driver protocol
   path as the mock case. The Runbook leaves the paper study's program and monitor
   checkpoints as explicit placeholders for the available compute.
-- ⬜ Confidential Space deployment: hardware attestation plus confidential provisioning
+- [ ] Confidential Space deployment: hardware attestation plus confidential provisioning
   of the provider's agent/tap packages into the measured workload (see RUNBOOK Phase 3).
-- ✅ `python -m evals_runner taps financial` provisions the selected model files and a
+- [x] `python -m evals_runner taps financial` provisions the selected model files and a
   non-executable probe package through registered drivers. The paper study's checkpoint
   and detector remain explicit placeholders; full-scale runs and threshold calibration
   remain evaluation work (RUNBOOK Phase 2).
-- ✅ Local overhead, adaptive-gaming, model-agent-divergence, and illustration
+- [x] Local overhead, adaptive-gaming, model-agent-divergence, and illustration
   generation paths are implemented under `evals_runner/` and `evals_results/`.

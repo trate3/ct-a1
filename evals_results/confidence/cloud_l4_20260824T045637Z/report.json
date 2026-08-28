@@ -50,9 +50,9 @@
         "device": "cuda",
         "dtype": "auto",
         "max_new_tokens": 256,
-        "monitor_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+        "monitor_artifact": "transformers:/home/anon/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
         "monitor_model": "google/gemma-4-E2B-it",
-        "program_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+        "program_artifact": "transformers:/home/anon/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
         "program_model": "google/gemma-4-E2B-it"
       },
       "processes": 10,
@@ -150,9 +150,9 @@
         "device": "cuda",
         "dtype": "auto",
         "max_new_tokens": 256,
-        "monitor_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+        "monitor_artifact": "transformers:/home/anon/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
         "monitor_model": "google/gemma-4-E2B-it",
-        "program_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+        "program_artifact": "transformers:/home/anon/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
         "program_model": "google/gemma-4-E2B-it"
       },
       "processes": 10,
@@ -256,7 +256,7 @@
         "model": "google/gemma-2-2b-it",
         "n_trajectories": 26,
         "probe_sha256": "397498099ecdb19714dfe89b87790b00c9870f6559ecc3c4df41ac32d4d51761",
-        "program_artifact": "gemma2-program-v1:transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-2-2b-it/snapshots/299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8@299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8:attn=eager",
+        "program_artifact": "gemma2-program-v1:transformers:/home/anon/.cache/huggingface/hub/models--google--gemma-2-2b-it/snapshots/299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8@299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8:attn=eager",
         "threshold": 0.0
       },
       "processes": 10,
