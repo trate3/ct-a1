@@ -1,0 +1,15 @@
+diff a/evals/financial/program.py b/evals/financial/program.py	(rejected hunks)
+@@ -1,7 +1,11 @@
+ """The probed program for the financial slice: Gemma-2 as a plain causal LM.
+ 
+-Apollo's probe pipeline supports Gemma-2 / Llama / Mistral, NOT Gemma-4, so the probe
+-is trained on Gemma-2 activations. This program loads that same model with
++Apollo's published pipeline supports Gemma-2 / Llama / Mistral; the probe is trained on
++Gemma-2 activations, and this program loads those same weights. That constraint has since
++been lifted by third_party/patches/gemma4-port.patch, which adds Gemma-4 training support
++-- but a probe is only valid on the exact weights that trained it, so switching this
++program is a prerequisite for certifying a Gemma-4 probe, not a consequence of the patch.
++See "Open gap" in probe-track.md. This program loads the Gemma-2 weights with
+ `AutoModelForCausalLM`; after generation it performs a second forward pass over the
+ prompt and generated answer to collect the probe layers. The probe therefore reads the
+ committed program's model and output, but not the generation forward pass itself. It is

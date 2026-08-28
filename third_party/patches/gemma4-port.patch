@@ -1,0 +1,274 @@
+diff --git a/deception_detection/activations.py b/deception_detection/activations.py
+index 6ad43c3..2c84776 100644
+--- a/deception_detection/activations.py
++++ b/deception_detection/activations.py
+@@ -61,8 +61,9 @@ class Activations:
+                     batch.tokens.to(device),
+                     output_hidden_states=True,
+                     attention_mask=batch.attention_mask.to(device),
+-                    # only compute logits on last token if we don't care about logits
+-                    num_logits_to_keep=0 if save_logits else 1,
++                    # only compute logits on last token if we don't care about logits.
++                    # (transformers >=5 renamed this kwarg from num_logits_to_keep)
++                    logits_to_keep=0 if save_logits else 1,
+                     use_cache=False,
+                 )
+ 
+diff --git a/deception_detection/data/base.py b/deception_detection/data/base.py
+index 1b6159b..5b913e0 100644
+--- a/deception_detection/data/base.py
++++ b/deception_detection/data/base.py
+@@ -66,6 +66,9 @@ class DialogueDataset:
+     # ideally this non zero default would just live in the tokenizer class.
+     padding: dict[str, dict[str, int]] = {
+         "gemma": {"left": 4, "right": 1},
++        # gemma4 assistant header is `<|turn>model\n` (3 tokens); left=3 covers it, right=1 covers
++        # the closing `<turn|>` token.
++        "gemma4": {"left": 3, "right": 1},
+         "mistral": {"left": 2, "right": 1},
+         "llama": {"left": 4, "right": 1},
+     }
+diff --git a/deception_detection/data/repe.py b/deception_detection/data/repe.py
+index be2c172..db8a00e 100644
+--- a/deception_detection/data/repe.py
++++ b/deception_detection/data/repe.py
+@@ -18,7 +18,13 @@ class RepeHonestDishonestFacts(DialogueDataset):
+     """
+ 
+     base_name = "repe_honesty"
+-    padding = {model_type: {"left": 0, "right": 0} for model_type in ["gemma", "mistral", "llama"]}
++    # gemma4 included explicitly: this override SHADOWS DialogueDataset.padding, so the
++    # base class gaining a gemma4 entry does not reach here and the lookup raises
++    # KeyError('gemma4') the first time a Gemma-4 probe is trained on this dataset.
++    padding = {
++        model_type: {"left": 0, "right": 0}
++        for model_type in ["gemma", "gemma4", "mistral", "llama"]
++    }
+     all_variants: list[str] = [
+         "plain",
+         "plain_with_sys",
+diff --git a/deception_detection/models.py b/deception_detection/models.py
+index dd2b0f2..712e203 100644
+--- a/deception_detection/models.py
++++ b/deception_detection/models.py
+@@ -1,3 +1,4 @@
++import os
+ from enum import Enum
+ from functools import cache
+ from pathlib import Path
+@@ -17,14 +18,18 @@ from deception_detection.log import logger
+ 
+ # We only use the instruct variations of the models. Note not all sizes are available for all model
+ # families.
+-ModelType = Literal["gemma", "mistral", "llama"]
+-ModelSize = Literal[1, 2, 3, 7, 8, 9, 27, 70]
++# Note: "gemma4" is the Gemma 4 family (e.g. google/gemma-4-31B-it), which uses a different chat
++# template from the Gemma 2 "gemma" family (<|turn>...<turn|> instead of <start_of_turn>...).
++ModelType = Literal["gemma", "gemma4", "mistral", "llama"]
++ModelSize = Literal[1, 2, 3, 7, 8, 9, 27, 31, 70]
+ 
+ 
+ class ModelName(str, Enum):
+     GEMMA_2B = "gemma-2b"
+     GEMMA_7B = "gemma-7b"
+     GEMMA_9B = "gemma-9b"
++    GEMMA_4_31B = "gemma4-31b"
++    GEMMA_4_E4B = "gemma4-4b"   # google/gemma-4-E4B-it; "4" is the effective size
+     MISTRAL_7B = "mistral-7b"
+     LLAMA_1B = "llama-1b"
+     LLAMA_3B = "llama-3b"
+@@ -53,6 +58,11 @@ def get_model_name(model_name: ModelName) -> str:
+ def get_num_layers_for_model(model_name: ModelName) -> int:
+     if model_name.type == "gemma":
+         n_layers = {2: 26, 7: 32, 9: 42, 27: 46}
++    elif model_name.type == "gemma4":
++        # text_config.num_hidden_layers, read from each checkpoint's published config.json.
++        # E4B is 42 like gemma-2-9b, but the two are NOT interchangeable: a layer index is
++        # only meaningful for the checkpoint whose activations fitted the probe.
++        n_layers = {4: 42, 31: 60}
+     elif model_name.type == "llama":
+         n_layers = {1: 16, 3: 28, 8: 32, 70: 80, 405: 126}
+     else:
+@@ -104,6 +114,8 @@ def get_model_and_tokenizer(
+         model, tokenizer = get_gemma_model_and_tokenizer(
+             model_name, omit_model, pw_locked, lora_path
+         )
++    elif model_name.type == "gemma4":
++        model, tokenizer = get_gemma4_model_and_tokenizer(model_name, omit_model)
+     elif model_name.type == "mistral":
+         model, tokenizer = get_mistral_model_and_tokenizer(
+             model_name, omit_model, pw_locked, lora_path
+@@ -114,7 +126,13 @@ def get_model_and_tokenizer(
+         raise ValueError(f"Invalid model type: {model_name.type}")
+ 
+     if cut_at_layer is not None and model is not None:
+-        model.model.layers = model.model.layers[:cut_at_layer]
++        if model_name.type == "gemma4":
++            # Gemma 4 is a multimodal model (Gemma4ForConditionalGeneration); its text transformer
++            # layers live under model.model.language_model.layers, not model.model.layers.
++            lm = model.model.language_model
++            lm.layers = lm.layers[:cut_at_layer]
++        else:
++            model.model.layers = model.model.layers[:cut_at_layer]
+ 
+     return model, tokenizer
+ 
+@@ -171,6 +189,85 @@ def get_gemma_model_and_tokenizer(
+     return model, tokenizer
+ 
+ 
++# HuggingFace id for the Gemma 4 31B instruct model. The tokenizer is ungated; the weights are
++# only needed when actually running the model (omit_model=False).
++GEMMA4_MODEL_ID = "google/gemma-4-31B-it"
++
++# Per-size checkpoints. Gemma 4 is Apache-2.0 and ungated, so none of these need a token.
++GEMMA4_MODEL_IDS = {
++    31: "google/gemma-4-31B-it",
++    4: "google/gemma-4-E4B-it",
++}
++
++
++def gemma4_model_id(model_name: ModelName) -> str:
++    return GEMMA4_MODEL_IDS[model_name.size]
++
++
++@cache
++def get_gemma4_model_and_tokenizer(
++    model_name: ModelName,
++    omit_model: bool = False,
++) -> tuple[PreTrainedModel | None, PreTrainedTokenizerBase]:
++    """Return Gemma 4 model and tokenizer.
++
++    The tokenizer source can be overridden with the GEMMA4_TOKENIZER_PATH env var, which is useful
++    for offline work (e.g. pointing at a local directory holding just the tokenizer files) without
++    needing the model weights.
++    """
++    if not model_name.type == "gemma4":
++        raise ValueError(f"Expected Gemma 4 model, got {model_name}")
++
++    load_dotenv()  # for hf token
++    tokenizer_src = os.environ.get("GEMMA4_TOKENIZER_PATH", gemma4_model_id(model_name))
++    tokenizer = AutoTokenizer.from_pretrained(tokenizer_src, padding_side="left")
++    # follow the repo convention of using bos as the pad token (see get_str_tokens)
++    tokenizer.pad_token_id = tokenizer.bos_token_id
++
++    if omit_model:
++        return None, tokenizer
++
++    # Cache dir is configurable (GEMMA4_CACHE_DIR) so the weights can live on whatever disk is
++    # writable; defaults to the repo convention of /data/huggingface.
++    # Default to the standard HF cache rather than Apollo's cluster path: with
++    # local_files_only forced on, an unset GEMMA4_CACHE_DIR made a first-time download
++    # impossible on any machine that is not their cluster.
++    cache_dir = os.environ.get("GEMMA4_CACHE_DIR") or None
++    # attn impl is env-configurable: eager is safe for Gemma soft-capping, but Gemma 4 may not use
++    # attention soft-capping, in which case sdpa is substantially faster for generation.
++    model_kwargs: dict[str, object] = {
++        "device_map": "auto",
++        "attn_implementation": os.environ.get("GEMMA4_ATTN", "eager"),
++        "cache_dir": cache_dir,
++        "local_files_only": os.environ.get("GEMMA4_LOCAL_ONLY", "0") == "1",
++    }
++    # GEMMA4_LOAD_4BIT=1 loads an nf4 4-bit quantization that fits entirely in 24GB of VRAM.
++    # This is intended for *generation* (needs all 60 layers, otherwise offloads to CPU at
++    # ~0.3 tok/s). Faithful activation extraction for the probe should use bf16 (default) with
++    # cut_at_layer, which fits on-GPU without quantization.
++    if os.environ.get("GEMMA4_LOAD_4BIT", "0") == "1":
++        from transformers import BitsAndBytesConfig
++
++        model_kwargs["quantization_config"] = BitsAndBytesConfig(
++            load_in_4bit=True,
++            bnb_4bit_quant_type="nf4",
++            bnb_4bit_compute_dtype=torch.bfloat16,
++            bnb_4bit_use_double_quant=True,
++        )
++    else:
++        model_kwargs["torch_dtype"] = torch.bfloat16
++    model = AutoModelForCausalLM.from_pretrained(  # type: ignore
++        gemma4_model_id(model_name), **model_kwargs)
++
++    logger.info(f"Loaded model {model_name}")
++
++    if model.device == torch.device("cpu"):
++        logger.warning("Model is on CPU")
++
++    model.eval()
++    return model, tokenizer
++
++
+ @cache
+ def get_mistral_model_and_tokenizer(
+     model_name: ModelName,
+diff --git a/deception_detection/tokenized_data.py b/deception_detection/tokenized_data.py
+index 47bce1c..9d27954 100644
+--- a/deception_detection/tokenized_data.py
++++ b/deception_detection/tokenized_data.py
+@@ -85,7 +85,17 @@ class TokenizedDataset:
+         - '\n\n' as the separator between a folded system prompt and the user message
+         - an empty string for two messages objects from the same user that are merged.
+         """
+-        if tokenizer_type == "gemma":
++        if tokenizer_type == "gemma4":
++            # Gemma 4 chat template: <bos><|turn>{role}\n{content}<turn|>\n , with roles
++            # system/user/model (assistant is rendered as "model") and a native system turn (so no
++            # system folding). <|turn> / <turn|> / \n are single tokens (105 / 106 / 107).
++            begin_of_text = r"(<pad>)*(<bos>)?"
++            end_of_last = r"(<turn\|>\n)?"
++            start_of_turn = r"<\|turn>(system|user|model)\n"
++            return re.compile(
++                rf"{begin_of_text}{start_of_turn}|{end_of_last}{start_of_turn}|(\n\n)?"
++            )
++        elif tokenizer_type == "gemma":
+             begin_of_text = r"(<pad>)*(<bos>)?"
+             end_of_last = r"(<end_of_turn>\n)?"
+             start_of_turn = r"<start_of_turn>(user|model)\n"
+@@ -215,14 +225,22 @@ class TokenizedDataset:
+         """
+         assert dialogues, "Cannot tokenize an empty dialogue"
+ 
+-        if tokenizer.name_or_path.startswith("google/gemma"):
++        name_or_path = tokenizer.name_or_path
++        # gemma4 must be checked before the generic "google/gemma" gemma-2 case. We match a
++        # substring rather than a prefix so that a local tokenizer directory (e.g. one named
++        # "gemma4-tokenizer") is also recognised.
++        if "gemma-4" in name_or_path or "gemma4" in name_or_path:
++            tokenizer_type = "gemma4"
++        elif name_or_path.startswith("google/gemma"):
+             tokenizer_type = "gemma"
+-        elif tokenizer.name_or_path.startswith("mistralai/"):
++        elif name_or_path.startswith("mistralai/"):
+             tokenizer_type = "mistral"
+-        elif tokenizer.name_or_path.startswith(("meta-llama/Meta-Llama-3", "meta-llama/Llama-3")):
++        elif name_or_path.startswith(("meta-llama/Meta-Llama-3", "meta-llama/Llama-3")):
+             tokenizer_type = "llama"
+         else:
+-            raise NotImplementedError("Only gemma, mistral, and llama tokenizers are supported")
++            raise NotImplementedError(
++                "Only gemma, gemma4, mistral, and llama tokenizers are supported"
++            )
+ 
+         # if llama and no system prompt, throw a warning
+         if (
+@@ -251,6 +269,7 @@ class TokenizedDataset:
+             if final_assistant:
+                 eot_suffix = {
+                     "gemma": "<end_of_turn>\n",
++                    "gemma4": "<turn|>\n",
+                     "mistral": "</s>",
+                     "llama": "<|eot_id|>",
+                 }[tokenizer_type]
+@@ -281,11 +300,13 @@ class TokenizedDataset:
+             tokenizer_type,
+         )
+         if detection_mask is not None and detect_only_start_of_turn:
+-            sot_tok = cast(int, tokenizer("<start_of_turn>", add_special_tokens=False).input_ids[0])
++            sot_str = "<|turn>" if tokenizer_type == "gemma4" else "<start_of_turn>"
++            sot_tok = cast(int, tokenizer(sot_str, add_special_tokens=False).input_ids[0])
+             detection_mask = detection_mask & (tokens == sot_tok)
+         if detection_mask is not None and detect_only_last_token:
+             eot_tok_str = {
+                 "gemma": "<end_of_turn>\n",
++                "gemma4": "<turn|>\n",
+                 "mistral": "</s>",
+                 "llama": "<|eot_id|>",
+             }[tokenizer_type]

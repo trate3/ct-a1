@@ -1,0 +1,8 @@
+[submodule "third_party/treecut-math"]
+	path = third_party/treecut-math
+	url = https://github.com/j-bagel/treecut-math
+	branch = main
+[submodule "third_party/deception-detection"]
+	path = third_party/deception-detection
+	url = https://github.com/ApolloResearch/deception-detection
+	branch = main

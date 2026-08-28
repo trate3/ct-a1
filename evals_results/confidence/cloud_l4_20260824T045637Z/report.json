@@ -1,0 +1,309 @@
+{
+  "schema_version": "ct-cost-report/1",
+  "workloads": [
+    {
+      "campaign_wall_seconds": 5391.013648959999,
+      "case": "confidence-certification-overhead",
+      "commitment_input_bytes": 10278849571,
+      "consistent": true,
+      "delta": {
+        "cpu_percent": -1.061172395918667,
+        "cpu_seconds": -2.8801979999999503,
+        "device_peak_bytes": 4259840.0,
+        "peak_rss_bytes": -118784,
+        "wall_percent": -1.0578663369254961,
+        "wall_seconds": -2.872199440499571
+      },
+      "directory": "evals_results/confidence/cloud_l4_20260824T045637Z",
+      "disagreements": [],
+      "environment": "treecut-generated",
+      "first_arm_peak_rss_bytes": {
+        "certified": 11397697536,
+        "direct": 11397816320
+      },
+      "median": {
+        "certified": {
+          "commitment_seconds": 116.29462811899975,
+          "cpu_seconds": 268.5363985,
+          "device_peak_bytes": 10671325184.0,
+          "model_run_seconds": 152.2207565789995,
+          "other_seconds": 0.2277540379996026,
+          "other_stdev_seconds": 0.024596546874539795,
+          "wall_seconds": 268.63652904850005
+        },
+        "direct": {
+          "commitment_seconds": 116.46796656550032,
+          "cpu_seconds": 271.41659649999997,
+          "device_peak_bytes": 10667065344.0,
+          "model_run_seconds": 154.74634722249994,
+          "other_seconds": 7.05964998815034e-05,
+          "other_stdev_seconds": 6.941804580671316e-06,
+          "wall_seconds": 271.5087284889996
+        }
+      },
+      "median_transmitted_bytes": 350653.0,
+      "median_transmitted_control_bytes": 1036.0,
+      "median_transmitted_environment_bytes": 349617.0,
+      "n_trials": 8,
+      "parameters": {
+        "artifact_bytes": 10278849571,
+        "device": "cuda",
+        "dtype": "auto",
+        "max_new_tokens": 256,
+        "monitor_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+        "monitor_model": "google/gemma-4-E2B-it",
+        "program_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+        "program_model": "google/gemma-4-E2B-it"
+      },
+      "processes": 10,
+      "protocol_residual_seconds": 0.22768344149972108,
+      "released": {
+        "m": 0.5,
+        "m_fp": 0.0
+      },
+      "repeats": 5,
+      "runtime": {
+        "accelerator": {
+          "available": true,
+          "capability": "8.9",
+          "cuda_runtime": "13.0",
+          "device_count": 1,
+          "driver": "580.173.02",
+          "kind": "cuda",
+          "multi_processor_count": 58,
+          "name": "NVIDIA L4",
+          "total_memory_bytes": 23659151360
+        },
+        "cpu_count": 8,
+        "instance": {
+          "image": "common-cu129-ubuntu-2204-nvidia-580-v20260818",
+          "instance_id": "3020535697823372259",
+          "instance_name": "ct-probe-l4",
+          "machine_type": "g2-standard-8",
+          "preemptible": "FALSE",
+          "project": "certified-taps",
+          "provider": "gce",
+          "provisioning_model": null,
+          "zone": "us-west1-a"
+        },
+        "machine": "x86_64",
+        "platform": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+        "python": "3.11.16",
+        "rss_unit_note": "process_lifetime_max_rss_bytes is host RSS and excludes device memory; read the accelerator block for weights and activations on GPU",
+        "total_ram_bytes": 33651978240,
+        "versions": {
+          "accelerate": "1.14.0",
+          "numpy": "2.4.6",
+          "torch": "2.13.0",
+          "transformers": "5.15.1"
+        }
+      },
+      "seed": 7,
+      "usd_per_hour": 0.891
+    },
+    {
+      "campaign_wall_seconds": 11383.360294679998,
+      "case": "confidence-certification-overhead",
+      "commitment_input_bytes": 10278849571,
+      "consistent": true,
+      "delta": {
+        "cpu_percent": -1.5893318087029238,
+        "cpu_seconds": -9.0884420000001,
+        "device_peak_bytes": 4259840.0,
+        "peak_rss_bytes": 4210688,
+        "wall_percent": -1.5939131842099483,
+        "wall_seconds": -9.114638435499842
+      },
+      "directory": "evals_results/confidence/cloud_l4_20260824T233258Z",
+      "disagreements": [],
+      "environment": "treecut-generated",
+      "first_arm_peak_rss_bytes": {
+        "certified": 11397726208,
+        "direct": 11393515520
+      },
+      "median": {
+        "certified": {
+          "commitment_seconds": 116.13447402799983,
+          "cpu_seconds": 562.7519975,
+          "device_peak_bytes": 10671872000.0,
+          "model_run_seconds": 446.46269331250096,
+          "other_seconds": 0.22000324099980162,
+          "other_stdev_seconds": 0.016900547684388853,
+          "wall_seconds": 562.7256930075
+        },
+        "direct": {
+          "commitment_seconds": 116.41523655099991,
+          "cpu_seconds": 571.8404395000001,
+          "device_peak_bytes": 10667612160.0,
+          "model_run_seconds": 455.39893547250017,
+          "other_seconds": 6.319149906630628e-05,
+          "other_stdev_seconds": 2.0854614475811753e-05,
+          "wall_seconds": 571.8403314429999
+        }
+      },
+      "median_transmitted_bytes": 350653.0,
+      "median_transmitted_control_bytes": 1036.0,
+      "median_transmitted_environment_bytes": 349617.0,
+      "n_trials": 24,
+      "parameters": {
+        "artifact_bytes": 10278849571,
+        "device": "cuda",
+        "dtype": "auto",
+        "max_new_tokens": 256,
+        "monitor_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+        "monitor_model": "google/gemma-4-E2B-it",
+        "program_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+        "program_model": "google/gemma-4-E2B-it"
+      },
+      "processes": 10,
+      "protocol_residual_seconds": 0.2199400495007353,
+      "released": {
+        "m": 0.5,
+        "m_fp": 0.0
+      },
+      "repeats": 5,
+      "runtime": {
+        "accelerator": {
+          "available": true,
+          "capability": "8.9",
+          "cuda_runtime": "13.0",
+          "device_count": 1,
+          "driver": "580.173.02",
+          "kind": "cuda",
+          "multi_processor_count": 58,
+          "name": "NVIDIA L4",
+          "total_memory_bytes": 23659151360,
+          "uuid": "GPU-fe8a936a-bf74-8d2d-eddf-cca4ace28d5e"
+        },
+        "cpu_count": 8,
+        "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+        "instance": {
+          "image": "common-cu129-ubuntu-2204-nvidia-580-v20260818",
+          "instance_id": "3020535697823372259",
+          "instance_name": "ct-probe-l4",
+          "machine_type": "g2-standard-8",
+          "preemptible": "FALSE",
+          "project": "certified-taps",
+          "provider": "gce",
+          "provisioning_model": null,
+          "zone": "us-west1-a"
+        },
+        "machine": "x86_64",
+        "platform": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+        "python": "3.11.16",
+        "rss_unit_note": "process_lifetime_max_rss_bytes is host RSS and excludes device memory; read the accelerator block for weights and activations on GPU",
+        "total_ram_bytes": 33651978240,
+        "versions": {
+          "accelerate": "1.14.0",
+          "numpy": "2.4.6",
+          "torch": "2.13.0",
+          "transformers": "5.15.1"
+        }
+      },
+      "seed": 7,
+      "usd_per_hour": 0.891
+    },
+    {
+      "campaign_wall_seconds": 7611.966831634996,
+      "case": "financial-certification-overhead",
+      "commitment_input_bytes": 5250587389,
+      "consistent": true,
+      "delta": {
+        "cpu_percent": -2.292249281919919,
+        "cpu_seconds": -8.776639500000101,
+        "device_peak_bytes": 4834816.0,
+        "peak_rss_bytes": -135168,
+        "wall_percent": -2.29145282766334,
+        "wall_seconds": -8.769857465000314
+      },
+      "directory": "evals_results/financial/cloud_l4_20260824T110840Z",
+      "disagreements": [],
+      "environment": "apollo-insider-trading",
+      "first_arm_peak_rss_bytes": {
+        "certified": 6101266432,
+        "direct": 6101401600
+      },
+      "median": {
+        "certified": {
+          "commitment_seconds": 29.714726939499087,
+          "cpu_seconds": 374.10665199999994,
+          "device_peak_bytes": 5820770304.0,
+          "model_run_seconds": 344.22041720749985,
+          "other_seconds": 0.015509281001868658,
+          "other_stdev_seconds": 0.00034160953297249257,
+          "wall_seconds": 373.9505441564979
+        },
+        "direct": {
+          "commitment_seconds": 29.720526916498784,
+          "cpu_seconds": 382.88329150000004,
+          "device_peak_bytes": 5815935488.0,
+          "model_run_seconds": 352.91663775300003,
+          "other_seconds": 8.053199417190626e-05,
+          "other_stdev_seconds": 1.0963253461513032e-05,
+          "wall_seconds": 382.72040162149824
+        }
+      },
+      "median_transmitted_bytes": 350668.0,
+      "median_transmitted_control_bytes": 1051.0,
+      "median_transmitted_environment_bytes": 349617.0,
+      "n_trials": 26,
+      "parameters": {
+        "artifact_bytes": 5250587389,
+        "attn_implementation": "eager",
+        "device": "cuda",
+        "dtype": "bfloat16",
+        "max_new_tokens": 128,
+        "model": "google/gemma-2-2b-it",
+        "n_trajectories": 26,
+        "probe_sha256": "397498099ecdb19714dfe89b87790b00c9870f6559ecc3c4df41ac32d4d51761",
+        "program_artifact": "gemma2-program-v1:transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-2-2b-it/snapshots/299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8@299a8560bedf22ed1c72a8a11e7dce4a7f9f51f8:attn=eager",
+        "threshold": 0.0
+      },
+      "processes": 10,
+      "protocol_residual_seconds": 0.015428749007696752,
+      "released": {
+        "m": 0.0,
+        "m_fp": 0.8461538461538461
+      },
+      "repeats": 5,
+      "runtime": {
+        "accelerator": {
+          "available": true,
+          "capability": "8.9",
+          "cuda_runtime": "13.0",
+          "device_count": 1,
+          "driver": "580.173.02",
+          "kind": "cuda",
+          "multi_processor_count": 58,
+          "name": "NVIDIA L4",
+          "total_memory_bytes": 23659151360
+        },
+        "cpu_count": 8,
+        "instance": {
+          "image": "common-cu129-ubuntu-2204-nvidia-580-v20260818",
+          "instance_id": "3020535697823372259",
+          "instance_name": "ct-probe-l4",
+          "machine_type": "g2-standard-8",
+          "preemptible": "FALSE",
+          "project": "certified-taps",
+          "provider": "gce",
+          "provisioning_model": null,
+          "zone": "us-west1-a"
+        },
+        "machine": "x86_64",
+        "platform": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+        "python": "3.11.16",
+        "rss_unit_note": "process_lifetime_max_rss_bytes is host RSS and excludes device memory; read the accelerator block for weights and activations on GPU",
+        "total_ram_bytes": 33651978240,
+        "versions": {
+          "accelerate": "1.14.0",
+          "numpy": "2.4.6",
+          "torch": "2.13.0",
+          "transformers": "5.15.1"
+        }
+      },
+      "seed": 7,
+      "usd_per_hour": 0.891
+    }
+  ]
+}

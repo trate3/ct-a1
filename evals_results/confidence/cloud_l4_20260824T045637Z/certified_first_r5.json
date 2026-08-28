@@ -1,0 +1,138 @@
+{
+  "certified": {
+    "certificate": {
+      "N": "d7aef28bd586a70a04c9e6efe3b0c5e7",
+      "h_c": "53f27edfcf43d6cc8df0550870edeab6023c0a74c083e9dada5253371d9686ee",
+      "h_s": "fb57f64b2d84cb841f2eed7664fa4f7574be9e6c632200c0d95282db32c5b979",
+      "m": 0.5,
+      "m_fp": 0.0,
+      "m_ref": "93b78f717f7805c200692f4c5f005f67fe67a627479abae92dfa9843d3853ec2",
+      "sig": "8f09be1a26d39eb3c0e87d6cd783d40e4a26e6e2ac0e0e015e1f4067147960d1edb356bf6622b46311817552481a7d562a453617ac235c223ac5ea77894f8302",
+      "t_E": "337d4a3dc6de91dad9421aa31747303c3c48ea529daaee86f9d592c6585a975f",
+      "version": "ct/0.2"
+    },
+    "metrics": {
+      "accelerator": {
+        "device_added_by_arm_bytes": 457948672,
+        "device_peak_allocated_bytes": 10667065344,
+        "device_peak_reserved_bytes": 12448694272,
+        "device_resident_at_arm_start_bytes": 10209116672
+      },
+      "cpu_seconds": 268.16791600000005,
+      "phases": {
+        "commit_artifacts_seconds": 116.29527104699991,
+        "evaluate_seconds": 151.77412258100048
+      },
+      "process_lifetime_max_rss_bytes": 11397316608,
+      "token_counts": null,
+      "wall_seconds": 268.2911644399992,
+      "wire_bytes": 350653,
+      "wire_bytes_by_message": {
+        "certout": {
+          "received_bytes": 527,
+          "sent_bytes": 0
+        },
+        "commit": {
+          "received_bytes": 509,
+          "sent_bytes": 0
+        },
+        "test": {
+          "received_bytes": 0,
+          "sent_bytes": 349617
+        }
+      },
+      "wire_control_bytes": 1036,
+      "wire_environment_bytes": 349617
+    }
+  },
+  "certified_wire_scope": "certifier-enclave-socketpair",
+  "config": {
+    "environment": "treecut-generated",
+    "experiment": "confidence-certification-overhead",
+    "n_trials": 8,
+    "parameters": {
+      "artifact_bytes": 10278849571,
+      "device": "cuda",
+      "dtype": "auto",
+      "max_new_tokens": 256,
+      "monitor_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+      "monitor_model": "google/gemma-4-E2B-it",
+      "program_artifact": "transformers:/home/amy.zhao/.cache/huggingface/hub/models--google--gemma-4-E2B-it/snapshots/3e22461f65e89153144f8adb70e3b8c2cc9845a7@3e22461f65e89153144f8adb70e3b8c2cc9845a7",
+      "program_model": "google/gemma-4-E2B-it"
+    },
+    "seed": 7
+  },
+  "direct": {
+    "measurement": {
+      "m": 0.5,
+      "m_fp": 0.0
+    },
+    "metrics": {
+      "accelerator": {
+        "device_added_by_arm_bytes": 449428992,
+        "device_peak_allocated_bytes": 10667065344,
+        "device_peak_reserved_bytes": 12448694272,
+        "device_resident_at_arm_start_bytes": 10217636352
+      },
+      "cpu_seconds": 272.20341400000007,
+      "phases": {
+        "commit_artifacts_seconds": 117.76554149799995,
+        "evaluate_seconds": 154.5336344009993
+      },
+      "process_lifetime_max_rss_bytes": 11397316608,
+      "token_counts": null,
+      "wall_seconds": 272.29924025699984,
+      "wire_bytes": 0,
+      "wire_bytes_by_message": {}
+    }
+  },
+  "environment_digest": "d861054fdc62ec119ca532d5dabc9fbfc7967abc37d09c869b06ca37afa5b27f",
+  "execution_order": "certified-first",
+  "overhead": {
+    "commit_artifacts_seconds": -1.470270451000033,
+    "cpu_seconds": -4.035498000000018,
+    "device_peak_allocated_bytes": 0,
+    "evaluate_seconds": -2.7595118199988065,
+    "wall_seconds": -4.008075817000645,
+    "wire_bytes": 350653,
+    "wire_control_bytes": 1036,
+    "wire_environment_bytes": 349617
+  },
+  "runtime": {
+    "accelerator": {
+      "available": true,
+      "capability": "8.9",
+      "cuda_runtime": "13.0",
+      "device_count": 1,
+      "driver": "580.173.02",
+      "kind": "cuda",
+      "multi_processor_count": 58,
+      "name": "NVIDIA L4",
+      "total_memory_bytes": 23659151360
+    },
+    "cpu_count": 8,
+    "instance": {
+      "image": "common-cu129-ubuntu-2204-nvidia-580-v20260818",
+      "instance_id": "3020535697823372259",
+      "instance_name": "ct-probe-l4",
+      "machine_type": "g2-standard-8",
+      "preemptible": "FALSE",
+      "project": "certified-taps",
+      "provider": "gce",
+      "provisioning_model": null,
+      "zone": "us-west1-a"
+    },
+    "machine": "x86_64",
+    "platform": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+    "python": "3.11.16",
+    "rss_unit_note": "process_lifetime_max_rss_bytes is host RSS and excludes device memory; read the accelerator block for weights and activations on GPU",
+    "total_ram_bytes": 33651978240,
+    "versions": {
+      "accelerate": "1.14.0",
+      "numpy": "2.4.6",
+      "torch": "2.13.0",
+      "transformers": "5.15.1"
+    }
+  },
+  "schema_version": "ct-eval/2"
+}

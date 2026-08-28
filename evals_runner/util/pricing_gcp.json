@@ -1,0 +1,132 @@
+{
+  "schema_version": "ct-cost/2",
+  "currency": "USD",
+  "region": "us-central1",
+  "provider": "gcp",
+  "retrieved": "2026-08-12",
+  "verified_against_invoice": false,
+  "notes": [
+    "GPU-CAPABLE confidential compute, which is what an LLM eval in a TEE needs.",
+    "CPU-only Confidential VM (N2D/SEV-SNP) is NOT applicable and is kept below only",
+    "as a reference point for the CPU-bound protocol work.",
+    "",
+    "Three cost terms, kept separate on purpose:",
+    "  1. base compute      -- ordinary (non-confidential) instance rate",
+    "  2. confidential rate -- separate SKUs, NOT a published percentage premium",
+    "  3. tee_slowdown      -- CC mode is also SLOWER (encrypted PCIe bounce buffers),",
+    "                          so it costs more wall-clock as well as more per hour.",
+    "                          Workload dependent; worst for small-batch/high-transfer.",
+    "",
+    "PROVISIONING CONSTRAINT: confidential H100 on A3 is Spot / flex-start only.",
+    "On-demand confidential is available on G4 (RTX PRO 6000, AMD SEV) only. So an",
+    "honest comparison prices confidential-A3 against SPOT A3, not on-demand A3.",
+    "",
+    "Nulls below are deliberate: unknown is recorded as null with the SKU ID needed to",
+    "resolve it, never as a guessed number. Resolve via the Cloud Billing Catalog API",
+    "or https://cloud.google.com/skus/?currency=USD&filter=<SKU_ID>"
+  ],
+  "sources": {
+    "confidential_gpu_skus": "https://cloud.google.com/skus/sku-groups/security-confidential-compute-gpu",
+    "confidential_cpu_premium": "https://cloud.google.com/confidential-computing/confidential-vm/pricing",
+    "base_instance": "https://cloud.google.com/products/compute/pricing",
+    "confidential_gpu_docs": "https://docs.cloud.google.com/confidential-computing/confidential-vm/docs/create-a-confidential-vm-instance-with-gpu"
+  },
+  "confidential_gpu_skus": {
+    "h100-80gb-intel-tdx": {
+      "on_demand_sku": "25E7-3ECC-174E",
+      "spot_sku": "FAEB-835C-E2D1",
+      "dws_sku": "FEA5-566A-184D",
+      "usd_per_gpu_hour_on_demand": null,
+      "usd_per_gpu_hour_spot": null,
+      "note": "On-demand SKU exists but A3 confidential provisioning is Spot/flex-start in practice; confirm before quoting on-demand."
+    },
+    "a3-intel-tdx-instance": {
+      "core_sku": "8E1D-617C-136B",
+      "ram_sku": "84E7-95DD-C107",
+      "spot_core_sku": "CF25-6908-DB12",
+      "spot_ram_sku": "46C3-D362-9B70",
+      "usd_per_vcpu_hour": null,
+      "usd_per_gib_hour": null,
+      "usd_per_vcpu_hour_spot": null,
+      "usd_per_gib_hour_spot": null
+    }
+  },
+  "confidential_premium_cpu_only": {
+    "amd-sev-snp": {
+      "usd_per_vcpu_hour": 0.0027502,
+      "usd_per_gib_hour": 0.0003686,
+      "machine_series": [
+        "N2D"
+      ],
+      "note": "No GPU. Reference only."
+    },
+    "intel-tdx": {
+      "usd_per_vcpu_hour": 0.0033982,
+      "usd_per_gib_hour": 0.0004555,
+      "machine_series": [
+        "C3"
+      ],
+      "note": "No GPU. Reference only."
+    }
+  },
+  "tee_slowdown": {
+    "scenarios": {
+      "low": 1.02,
+      "central": 1.06,
+      "high": 1.25
+    },
+    "unit": "multiplier on wall-clock for running the same workload in CC mode",
+    "note": [
+      "The spread is workload shape, not disagreement between sources. CC overhead sits in",
+      "the encrypted PCIe bounce-buffer path, so it is WORST for small models, small batches,",
+      "short sequences and high concurrency, and approaches zero when the GPU is compute-",
+      "saturated by a large model on long sequences. This is the same structural argument as",
+      "RQ1's protocol overhead: a fixed-ish cost divided by a denominator that grows.",
+      "Pick the scenario that matches the eval being priced; do not quote 'low' for a",
+      "short-sequence eval. NVIDIA also notes a one-time 1-3s attestation cost per instance,",
+      "which is not modelled here and matters for many-short-runs workloads."
+    ],
+    "sources": {
+      "low": "NVIDIA published 2-5% CC-mode throughput overhead for most H100 LLM inference (vendor figure, via 2026 deployment guides)",
+      "central": "arXiv:2509.18886 - 4-8% throughput penalty on H100 CC GPUs, diminishing with batch and input size",
+      "high": "arXiv:2607.19353 - H100 under Intel TDX (the GCP config): TTFT +21.8% Mistral-7B, +27.8% Qwen3-30B-A3B; authors advise reserving 15-25% extra throughput capacity",
+      "structural": "arXiv:2409.03992 - overhead is data-transfer bound, below 5% for typical queries and near-zero for large models/long sequences"
+    }
+  },
+  "instances": {
+    "a3-highgpu-1g": {
+      "vcpus": 26,
+      "memory_gib": 234,
+      "gpu": "1x NVIDIA H100 80GB",
+      "gpu_count": 1,
+      "base_usd_per_hour": 11.06,
+      "base_usd_per_hour_spot": null,
+      "confidential_tech": "h100-80gb-intel-tdx",
+      "base_price_note": "Spot quotes from third-party trackers diverge badly (~$1.16 to ~$10.09/hr); the plausible band is ~$1.16-3.69/hr against a ~$11/hr on-demand list reference. Left null rather than picking one. Confidential H100 requires Spot/flex-start, so Spot is the correct baseline. No public source prices the CONFIDENTIAL GPU SKU itself: resolve via the GCP pricing calculator with Confidential VM (Intel TDX) enabled, or the Cloud Billing Catalog API using the SKU ids above.",
+      "base_usd_per_hour_spot_range": [
+        1.16,
+        3.69
+      ]
+    },
+    "a3-highgpu-8g": {
+      "vcpus": 208,
+      "memory_gib": 1872,
+      "gpu": "8x NVIDIA H100 80GB",
+      "gpu_count": 8,
+      "base_usd_per_hour": 87.83,
+      "base_usd_per_hour_spot": null,
+      "confidential_tech": "h100-80gb-intel-tdx",
+      "base_price_note": "The only on-demand A3 H100 configuration."
+    },
+    "local-kratos": {
+      "vcpus": 48,
+      "memory_gib": 125,
+      "gpu": "1x NVIDIA RTX 3090 24GB",
+      "gpu_count": 1,
+      "base_usd_per_hour": null,
+      "base_usd_per_hour_spot": null,
+      "confidential_tech": null,
+      "note": "The measurement box. Not a rentable SKU and has no CC mode, so it can measure protocol overhead but NOT the TEE terms. Price its wall-clock against a cloud SKU with --instance."
+    }
+  }
+}

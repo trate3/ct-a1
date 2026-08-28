@@ -1,0 +1,31 @@
+[project]
+name = "certified_taps"
+version = "0.1.0"
+description = "Local prototype of the Certified Taps protocol: confidential certification of an AI-agent monitor against a secret test environment."
+requires-python = ">=3.11"
+dependencies = [
+    "pynacl>=1.5",   # Ed25519 attestation signatures + sealed-box confidential transport
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "numpy", "pyyaml"]   # numpy: the probe scoring-math test; pyyaml: Apollo's insider-trading prompts
+plots = ["matplotlib>=3.8"]
+# Talking to a llama.cpp server instead of loading weights in-process; PySocks is
+# only needed for .onion hosts, which route over SOCKS5h.
+server = ["requests>=2.31", "PySocks>=1.7"]
+# The real program/monitor backends pull these in; not needed for the mock
+# end-to-end harness or the probe scoring-math test (numpy only).
+model = ["torch", "torchvision", "transformers>=5.10.1", "accelerate", "numpy", "pillow"]  # pillow + torchvision: Gemma-4's multimodal processor imports both even for text-only use
+
+[tool.pytest.ini_options]
+# Co-located tests live beside the code they cover; do not collect third_party/.
+testpaths = ["ct_core", "util", "evals", "evals_runner"]
+pythonpath = ["."]
+addopts = "--import-mode=importlib"
+
+[tool.setuptools.packages.find]
+include = ["ct_core*", "util*", "evals*", "evals_runner*"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
